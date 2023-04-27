@@ -27,6 +27,7 @@ let menu_sub = [];
 let cate_tab = [];
 let cate_cont = [];
 let cate_count = [];
+let first = true;
 
 const usersQuery = 'select *from users;';
 const menuQuery = 'select *from menu;';
@@ -36,7 +37,12 @@ const cateCount = 'SELECT a.cate_code, a.cate_nm, COUNT(*) AS count FROM photo_c
 const cateQueryJoin = 'SELECT a.cate_code, a.cate_nm, b.cont_id, b.photo_url, b.photo_txt, b.photo_time, b.photo_user FROM photo_category AS a INNER JOIN photo_cont AS b ON a.cate_code = b.cate_code ORDER BY b.cont_id;';
 
 app.get('/api', function (req, res) {
-  res.send({ id: id, menu: menu, menu_sub: menu_sub, cate_tab: cate_tab, cate_cont: cate_cont, cate_count: cate_count });
+  if (first == false) {
+    dbInit()
+    res.json({ id: id, menu: menu, menu_sub: menu_sub, cate_tab: cate_tab, cate_cont: cate_cont, cate_count: cate_count });
+  } else {
+    res.json({ id: id, menu: menu, menu_sub: menu_sub, cate_tab: cate_tab, cate_cont: cate_cont, cate_count: cate_count });
+  }
 });
 
 connection.connect();
@@ -50,6 +56,9 @@ function dbInit() {
     cate_count = result[3];
     cate_cont = result[4];
   });
+  if(first == true) {
+    first = false
+  }
 }
 
 dbInit()
